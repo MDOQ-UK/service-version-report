@@ -1,0 +1,55 @@
+function check_for_bin {
+    which $1 >/dev/null 2>&1; echo -n $?;
+}
+
+function not_found {
+    echo "unable to find a binary for '$1'"
+}
+
+
+echo -n 'PHP:              '
+exits=$(check_for_bin php)
+if [[ exists -gt 0 ]]; then
+    echo "not found"
+else
+    php -r "echo phpversion().PHP_EOL;"
+fi
+
+echo -n "Nginx:            "
+exits=$(check_for_bin nginx)
+if [[ exists -gt 0 ]]; then
+    echo "not found"
+else
+    nginx -v
+fi
+
+echo -n "Redis:            "
+exits=$(check_for_bin redis-server)
+if [[ exists -gt 0 ]]; then
+    echo "not found"
+else
+    redis-server --version
+fi
+
+echo -n "Varnish:          "
+exits=$(check_for_bin varnishd)
+if [[ exists -gt 0 ]]; then
+    echo "not found"
+else
+    varnishd -V 2>&1 | head -n1
+fi
+
+echo -n "Mysql:            "
+exits=$(check_for_bin mysqld)
+if [[ exists -gt 0 ]]; then
+    echo "not found"
+else
+    mysqld --version
+fi
+
+echo -n "Elasticsearch:    "
+if [[ $(check_for_bin elasticsearch) -gt 0 ]]; then
+    not_found elasticsearch
+else
+    elasticsearch --version
+fi
